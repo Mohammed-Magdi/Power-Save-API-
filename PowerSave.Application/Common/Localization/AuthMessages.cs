@@ -35,6 +35,7 @@ public static class AuthMessages
             AuthErrorCode.SmsDeliveryFailed => "تم إنشاء الحساب ولكن تعذر إرسال رسالة التحقق حالياً، يرجى طلب إعادة الإرسال.",
             AuthErrorCode.PasswordMismatch => "كلمة المرور وتأكيد كلمة المرور غير متطابقتين.",
             AuthErrorCode.OtpMaxAttemptsExceeded => "تم استنفاد الحد الأقصى للمحاولات الخاطئة لهذا الرمز (5 محاولات). تم إبطال الرمز، يرجى طلب رمز جديد.",
+            AuthErrorCode.UsernameMustContainLetter => "يجب أن يحتوي اسم المستخدم على حرف إنجليزي واحد على الأقل.",
             _ => "حدث خطأ أثناء معالجة الطلب."
         };
     }
@@ -72,6 +73,7 @@ public static class AuthMessages
             AuthErrorCode.SmsDeliveryFailed => "Account created, but SMS delivery failed. Please request an OTP resend.",
             AuthErrorCode.PasswordMismatch => "Password and password confirmation do not match.",
             AuthErrorCode.OtpMaxAttemptsExceeded => "Maximum incorrect OTP attempts exceeded (5 attempts). The code has been invalidated, please request a new verification code.",
+            AuthErrorCode.UsernameMustContainLetter => "Username must contain at least one English letter.",
             _ => "An error occurred while processing the request."
         };
     }

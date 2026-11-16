@@ -7,6 +7,7 @@ public class UsernameValidator : IUsernameValidator
 {
 
     private static readonly Regex AllowedCharsRegex = new(@"^[a-zA-Z0-9#_!]+$", RegexOptions.Compiled);
+    private static readonly Regex ContainsLetterRegex = new(@"[a-zA-Z]", RegexOptions.Compiled);
 
     public bool Validate(string? username, out string? errorMessage)
     {
@@ -27,6 +28,12 @@ public class UsernameValidator : IUsernameValidator
         if (username.Contains(' ') || !AllowedCharsRegex.IsMatch(username))
         {
             errorMessage = AuthMessages.GetArabicMessage(AuthErrorCode.UnsupportedUsernameCharacters);
+            return false;
+        }
+
+        if (!ContainsLetterRegex.IsMatch(username))
+        {
+            errorMessage = AuthMessages.GetArabicMessage(AuthErrorCode.UsernameMustContainLetter);
             return false;
         }
 

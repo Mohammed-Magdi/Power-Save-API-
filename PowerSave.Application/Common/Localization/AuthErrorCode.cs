@@ -28,5 +28,6 @@ public enum AuthErrorCode
     SmsDeliveryFailed = 23,
     GeneralError = 24,
     PasswordMismatch = 25,
-    OtpMaxAttemptsExceeded = 26
+    OtpMaxAttemptsExceeded = 26,
+    UsernameMustContainLetter = 27
 }
