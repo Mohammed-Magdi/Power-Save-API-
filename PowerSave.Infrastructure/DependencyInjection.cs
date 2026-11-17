@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PowerSave.Application.Common.Interfaces;
 using PowerSave.Application.Interfaces;
 using PowerSave.Domain.Entities;
 using PowerSave.Infrastructure.Persistence;
+using PowerSave.Infrastructure.Persistence.Repositories;
 using PowerSave.Infrastructure.Security;
 using PowerSave.Infrastructure.Sms;
 
@@ -26,6 +28,8 @@ public static class DependencyInjection
             }));
 
         services.AddScoped<IPowerSaveDbContext>(sp => sp.GetRequiredService<PowerSaveDbContext>());
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
         services.AddIdentityCore<ApplicationUser>(options =>
         {

@@ -153,6 +153,124 @@ namespace PowerSave.Infrastructure.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PowerSave.Domain.Entities.ApplianceCatalog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("DefaultDailyHours")
+                        .HasColumnType("float");
+
+                    b.Property<double>("DefaultWattage")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("IconUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsModelSensitive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxAllowedQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("ApplianceCatalogs", (string)null);
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.ApplianceCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CategoryType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IconUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryType");
+
+                    b.ToTable("ApplianceCategories", (string)null);
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.ApplianceModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApplianceCatalogId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("CapacityOrSize")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("EnergyRating")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ModelNameOrNumber")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<double>("Wattage")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplianceCatalogId");
+
+                    b.HasIndex("Brand");
+
+                    b.ToTable("ApplianceModels", (string)null);
+                });
+
             modelBuilder.Entity("PowerSave.Domain.Entities.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -233,6 +351,176 @@ namespace PowerSave.Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("PowerSave.Domain.Entities.HouseholdProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DaytimePresence")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HomeArea")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HomeType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("HouseholdSize")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsSkipped")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("NumberOfRooms")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("HouseholdProfiles", (string)null);
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.LifestyleProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeSpan?>("BedTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DailyRoutine")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("HomeTimeSlotsCsv")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsSkipped")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeSpan?>("WakeUpTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("WeekendRoutine")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("LifestyleProfiles", (string)null);
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.MeterSetup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("BillPaymentDay")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ConsumptionStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsSkipped")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MeterType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("MonthlyBillAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MonthlyCardBudget")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("MeterSetups", (string)null);
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.PersonalizationProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CompletedStagesCsv")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("CurrentStage")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SkippedStagesCsv")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("StageStatus")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("PersonalizationProgresses", (string)null);
+                });
+
             modelBuilder.Entity("PowerSave.Domain.Entities.PhoneVerificationOtp", b =>
                 {
                     b.Property<Guid>("Id")
@@ -295,6 +583,93 @@ namespace PowerSave.Infrastructure.Migrations
                     b.HasIndex("UserId", "CreatedAtUtc");
 
                     b.ToTable("PhoneVerificationOtps", (string)null);
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.SavingTarget", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ConfiguredAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsSkipped")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SavingPercentage")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("SavingTargets", (string)null);
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.UserAppliance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ApplianceCatalogId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ApplianceModelId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<double>("DailyOperatingHours")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("IsModelSkipped")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsModelUnknown")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsWattageEstimated")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RoomLocation")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("SequenceNumber")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Wattage")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplianceCatalogId");
+
+                    b.HasIndex("ApplianceModelId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserAppliances", (string)null);
                 });
 
             modelBuilder.Entity("PowerSave.Domain.Entities.UserConsent", b =>
@@ -417,6 +792,72 @@ namespace PowerSave.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PowerSave.Domain.Entities.ApplianceCatalog", b =>
+                {
+                    b.HasOne("PowerSave.Domain.Entities.ApplianceCategory", "Category")
+                        .WithMany("Appliances")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.ApplianceModel", b =>
+                {
+                    b.HasOne("PowerSave.Domain.Entities.ApplianceCatalog", "ApplianceCatalog")
+                        .WithMany("Models")
+                        .HasForeignKey("ApplianceCatalogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplianceCatalog");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.HouseholdProfile", b =>
+                {
+                    b.HasOne("PowerSave.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.LifestyleProfile", b =>
+                {
+                    b.HasOne("PowerSave.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.MeterSetup", b =>
+                {
+                    b.HasOne("PowerSave.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.PersonalizationProgress", b =>
+                {
+                    b.HasOne("PowerSave.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PowerSave.Domain.Entities.PhoneVerificationOtp", b =>
                 {
                     b.HasOne("PowerSave.Domain.Entities.ApplicationUser", "User")
@@ -424,6 +865,42 @@ namespace PowerSave.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.SavingTarget", b =>
+                {
+                    b.HasOne("PowerSave.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.UserAppliance", b =>
+                {
+                    b.HasOne("PowerSave.Domain.Entities.ApplianceCatalog", "ApplianceCatalog")
+                        .WithMany("UserAppliances")
+                        .HasForeignKey("ApplianceCatalogId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("PowerSave.Domain.Entities.ApplianceModel", "ApplianceModel")
+                        .WithMany("UserAppliances")
+                        .HasForeignKey("ApplianceModelId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("PowerSave.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplianceCatalog");
+
+                    b.Navigation("ApplianceModel");
 
                     b.Navigation("User");
                 });
@@ -448,6 +925,23 @@ namespace PowerSave.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.ApplianceCatalog", b =>
+                {
+                    b.Navigation("Models");
+
+                    b.Navigation("UserAppliances");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.ApplianceCategory", b =>
+                {
+                    b.Navigation("Appliances");
+                });
+
+            modelBuilder.Entity("PowerSave.Domain.Entities.ApplianceModel", b =>
+                {
+                    b.Navigation("UserAppliances");
                 });
 
             modelBuilder.Entity("PowerSave.Domain.Entities.ApplicationUser", b =>

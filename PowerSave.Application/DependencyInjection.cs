@@ -20,6 +20,14 @@ public static class DependencyInjection
 
         services.AddScoped<IAuthService, AuthService>();
 
+        services.AddSingleton<IOperatingHoursCalculator, OperatingHoursCalculator>();
+        services.AddScoped<IPersonalizationService, PersonalizationService>();
+        services.AddScoped<IHouseholdProfileService, HouseholdProfileService>();
+        services.AddScoped<IApplianceService, ApplianceService>();
+        services.AddScoped<IApplianceModelService, ApplianceModelService>();
+        services.AddScoped<IMeterSetupService, MeterSetupService>();
+        services.AddScoped<ISavingTargetService, SavingTargetService>();
+
         return services;
     }
 }

@@ -67,7 +67,7 @@ public class ValidationTests
     [InlineData("Sara!")]
     [InlineData("user_name")]
     [InlineData("abc")]
-    [InlineData("12345678901234567890")]
+    [InlineData("u1234567890123456789")]
     public void UsernameValidator_ValidUsernames_ShouldSucceed(string username)
     {
         var isValid = _usernameValidator.Validate(username, out var error);

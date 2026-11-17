@@ -18,6 +18,16 @@ public class PowerSaveDbContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<PhoneVerificationOtp> PhoneVerificationOtps => Set<PhoneVerificationOtp>();
     public DbSet<UserOtpRateLimit> UserOtpRateLimits => Set<UserOtpRateLimit>();
 
+    public DbSet<PersonalizationProgress> PersonalizationProgresses => Set<PersonalizationProgress>();
+    public DbSet<HouseholdProfile> HouseholdProfiles => Set<HouseholdProfile>();
+    public DbSet<LifestyleProfile> LifestyleProfiles => Set<LifestyleProfile>();
+    public DbSet<ApplianceCategory> ApplianceCategories => Set<ApplianceCategory>();
+    public DbSet<ApplianceCatalog> ApplianceCatalogs => Set<ApplianceCatalog>();
+    public DbSet<ApplianceModel> ApplianceModels => Set<ApplianceModel>();
+    public DbSet<UserAppliance> UserAppliances => Set<UserAppliance>();
+    public DbSet<MeterSetup> MeterSetups => Set<MeterSetup>();
+    public DbSet<SavingTarget> SavingTargets => Set<SavingTarget>();
+
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         return Database.BeginTransactionAsync(cancellationToken);

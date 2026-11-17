@@ -8,6 +8,7 @@ using Power_Save.Middleware;
 using PowerSave.Application;
 using PowerSave.Application.DTOs;
 using PowerSave.Infrastructure;
+using PowerSave.Infrastructure.Persistence;
 using PowerSave.Infrastructure.Security;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -128,6 +129,20 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<PowerSaveDbContext>();
+    try
+    {
+        await DbInitializer.SeedPersonalizationCatalogAsync(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the catalog data.");
+    }
+}
 
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
