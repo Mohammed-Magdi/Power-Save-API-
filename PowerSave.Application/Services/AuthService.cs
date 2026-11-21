@@ -15,6 +15,12 @@ namespace PowerSave.Application.Services;
 public class AuthService : IAuthService
 {
     private const int MaxOtpFailedAttempts = 5;
+    public static readonly TimeSpan UnverifiedAccountLifespan = TimeSpan.FromHours(48);
+
+    private static bool IsExpiredUnverifiedUser(ApplicationUser user, DateTime now)
+    {
+        return !user.PhoneNumberConfirmed && !user.IsActive && user.CreatedAtUtc < now.Subtract(UnverifiedAccountLifespan);
+    }
 
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IPowerSaveDbContext _dbContext;
@@ -105,20 +111,39 @@ public class AuthService : IAuthService
                 AuthMessages.GetArabicMessage(AuthErrorCode.PasswordMismatch));
         }
 
+        var now = _dateTimeProvider.UtcNow;
+
         var existingUserByName = await _userManager.FindByNameAsync(request.Username);
         if (existingUserByName is not null)
         {
-            return Result<RegisterResponseDto>.Failure(AuthErrorCode.DuplicateUsername, 409);
+            if (IsExpiredUnverifiedUser(existingUserByName, now))
+            {
+                await _userManager.DeleteAsync(existingUserByName);
+            }
+            else
+            {
+                return Result<RegisterResponseDto>.Failure(AuthErrorCode.DuplicateUsername, 409);
+            }
         }
 
         var existingUserByPhone = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.PhoneNumber == normalizedPhone, cancellationToken);
         if (existingUserByPhone is not null)
         {
-            return Result<RegisterResponseDto>.Failure(AuthErrorCode.DuplicatePhoneNumber, 409);
+            if (IsExpiredUnverifiedUser(existingUserByPhone, now))
+            {
+                var userToDelete = await _userManager.FindByIdAsync(existingUserByPhone.Id.ToString());
+                if (userToDelete is not null)
+                {
+                    await _userManager.DeleteAsync(userToDelete);
+                }
+            }
+            else
+            {
+                return Result<RegisterResponseDto>.Failure(AuthErrorCode.DuplicatePhoneNumber, 409);
+            }
         }
-
-        var now = _dateTimeProvider.UtcNow;
 
         var user = new ApplicationUser
         {
@@ -226,6 +251,17 @@ public class AuthService : IAuthService
             return Result<VerifyPhoneResponseDto>.Failure(AuthErrorCode.UserNotFound, 404);
         }
 
+        var now = _dateTimeProvider.UtcNow;
+
+        if (IsExpiredUnverifiedUser(user, now))
+        {
+            await _userManager.DeleteAsync(user);
+            return Result<VerifyPhoneResponseDto>.Failure(
+                AuthErrorCode.UserNotFound,
+                404,
+                "انتهت صلاحية الحساب غير المفعل بعد مرور 48 ساعة. يرجى إنشاء حساب جديد.");
+        }
+
         if (user.PhoneNumberConfirmed && user.IsActive)
         {
             var alreadyVerifiedToken = _tokenService.GenerateToken(user);
@@ -237,8 +273,6 @@ public class AuthService : IAuthService
                 AccessToken = alreadyVerifiedToken
             });
         }
-
-        var now = _dateTimeProvider.UtcNow;
 
         var latestOtp = await _dbContext.PhoneVerificationOtps
             .Where(o => o.UserId == user.Id)
@@ -326,12 +360,21 @@ public class AuthService : IAuthService
             return Result<ResendOtpResponseDto>.Failure(AuthErrorCode.UserNotFound, 404);
         }
 
+        var now = _dateTimeProvider.UtcNow;
+
+        if (IsExpiredUnverifiedUser(user, now))
+        {
+            await _userManager.DeleteAsync(user);
+            return Result<ResendOtpResponseDto>.Failure(
+                AuthErrorCode.UserNotFound,
+                404,
+                "انتهت صلاحية الحساب غير المفعل بعد مرور 48 ساعة. يرجى إنشاء حساب جديد.");
+        }
+
         if (user.PhoneNumberConfirmed)
         {
             return Result<ResendOtpResponseDto>.Failure(AuthErrorCode.None, 400, "تم تأكيد رقم الهاتف مسبقاً لهذا الحساب.");
         }
-
-        var now = _dateTimeProvider.UtcNow;
 
         var rateLimit = await _dbContext.UserOtpRateLimits
             .FirstOrDefaultAsync(r => r.UserId == user.Id, cancellationToken);
@@ -490,6 +533,16 @@ public class AuthService : IAuthService
 
         if (!user.PhoneNumberConfirmed)
         {
+            var now = _dateTimeProvider.UtcNow;
+            if (IsExpiredUnverifiedUser(user, now))
+            {
+                await _userManager.DeleteAsync(user);
+                return Result<LoginResponseDto>.Failure(
+                    AuthErrorCode.UserNotFound,
+                    404,
+                    "انتهت صلاحية الحساب غير المفعل بعد مرور 48 ساعة. يرجى إنشاء حساب جديد.");
+            }
+
             return Result<LoginResponseDto>.Failure(AuthErrorCode.AccountPhoneUnverified, 403);
         }
 
