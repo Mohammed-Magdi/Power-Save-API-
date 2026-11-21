@@ -149,7 +149,8 @@ public class OtpLifecycleTests
             OtpCode = otpCode
         });
 
-        Assert.True(secondResult.IsSuccess);
+        Assert.False(secondResult.IsSuccess);
+        Assert.Equal(400, secondResult.StatusCode);
     }
 
     [Fact]

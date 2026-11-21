@@ -262,16 +262,12 @@ public class AuthService : IAuthService
                 "انتهت صلاحية الحساب غير المفعل بعد مرور 48 ساعة. يرجى إنشاء حساب جديد.");
         }
 
-        if (user.PhoneNumberConfirmed && user.IsActive)
+        if (user.PhoneNumberConfirmed)
         {
-            var alreadyVerifiedToken = _tokenService.GenerateToken(user);
-            return Result<VerifyPhoneResponseDto>.Success(new VerifyPhoneResponseDto
-            {
-                IsVerified = true,
-                IsActive = true,
-                Message = "تم تأكيد رقم الهاتف مسبقاً والحساب مفعل.",
-                AccessToken = alreadyVerifiedToken
-            });
+            return Result<VerifyPhoneResponseDto>.Failure(
+                AuthErrorCode.None,
+                400,
+                "تم تأكيد رقم الهاتف مسبقاً لهذا الحساب. يرجى تسجيل الدخول باستخدام كلمة المرور.");
         }
 
         var latestOtp = await _dbContext.PhoneVerificationOtps
